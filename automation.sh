@@ -35,3 +35,18 @@ APACHE_LOG_PATH="/var/log/apache2/*.log"
 tar -cvf /tmp/${TAR_FILE} ${APACHE_LOG_PATH}
 
 aws s3 cp /tmp/${TAR_FILE} s3://${S3_BUCKET_NAME}/${TAR_FILE}
+
+SIZE=$(ls -lh /tmp/${TAR_FILE} | awk '{ print $5 }')
+
+INVENTORY_HTML_FILE_NAME="/var/www/html/inventory.html"
+
+if [ -f $INVENTORY_HTML_FILE_NAME ]
+then
+    echo "Inventory file exists in the www directory"
+    sudo echo -e "httpd-logs &emsp; ${TIMESTAMP} &emsp; tar &emsp; ${SIZE} <br />" >> ${INVENTORY_HTML_FILE_NAME}
+else
+    echo "Inventory file does not exist in the www directory, so create it"
+    sudo touch ${INVENTORY_HTML_FILE_NAME}
+    sudo echo -e "<b>LogType</b> &emsp;  <b>Time Created</b> &emsp;     <b>Type</b> &emsp; <b>Size</b> <br />" >> ${INVENTORY_HTML_FILE_NAME}
+    sudo echo -e "httpd-logs &emsp; ${TIMESTAMP} &emsp; tar &emsp; ${SIZE} <br />" >> ${INVENTORY_HTML_FILE_NAME}
+fi
