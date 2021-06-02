@@ -9,5 +9,5 @@ then
     echo "Cronjob file exists and skipping the setup"
 else
     echo "Cronjob not setup, so setting it up"
-    echo "1 * * * * root /root/Automation_Project/automation.sh" > ${CRON_JOB_FILE}
+    echo "0 0 * * * root /root/Automation_Project/automation.sh" > ${CRON_JOB_FILE}
 fi
